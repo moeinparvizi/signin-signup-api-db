@@ -125,7 +125,6 @@ body {
 .overlay__panel {
   align-items: center;
   display: flex;
-  flex-direction: column;
   height: 100%;
   justify-content: center;
   position: absolute;
@@ -231,4 +230,54 @@ body {
 }
 .me > a {
   color: #000;
+}
+
+.usershow {
+  padding: 20px;
+  border-radius: 20px;
+  color: var(--white);
+  background-image: linear-gradient(
+    90deg,
+    var(--blue) 0%,
+    rgba(255, 255, 255, 0.5) 74%
+  );
+  transition: 1s;
+  transform: translateX(-3000px);
+}
+.usershow__containshow {
+  display: grid;
+  place-items: center;
+  gap: 10px;
+}
+.usershow__welcome {
+  display: grid;
+  place-items: center;
+  margin-top: 0;
+  padding-top: 0;
+}
+.containshow__icon > svg {
+  width: 50px;
+  height: 50px;
+}
+.containshow__outdel {
+  display: grid;
+  place-items: center;
+  gap: 5px;
+}
+.deleteuser,
+.logout {
+  padding: 10px;
+  border-radius: 20px;
+  color: var(--white);
+  background-image: linear-gradient(
+    90deg,
+    var(--blue) 0%,
+    var(--lightblue) 74%
+  );
+  border: none;
+  cursor: pointer;
+  transition: 0.4s;
+  &:hover {
+    scale: 1.1;
+  }
 }

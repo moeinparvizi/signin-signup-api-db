@@ -35,11 +35,11 @@ let flagvalue,
   flagreg,
   flagfind = 0;
 
-const sweetAlert2 = (text) => {
+const sweetAlert2 = (text, icon) => {
   Swal.fire({
     title: text,
     background: "transparent",
-    icon: "error",
+    icon: icon,
     confirmButtonText: "try again",
     timer: "30000",
     backdrop: "rgba(0,0,0,.7)",
@@ -71,32 +71,32 @@ const addToApi = () => {
       }
     })
     .then((task) => {
-      sweetAlert2(`dear ${task.user}, now you can signup`);
+      sweetAlert2(`dear ${task.user}, now you can signup`, "success");
       userup.value = "";
       emailup.value = "";
       passup.value = "";
       signInBtn.click();
     })
     .catch((error) => {
-      sweetAlert2(`server is down . error : ${error.message}`);
+      sweetAlert2(`server is down . error : ${error.message}`, "error");
     });
 };
 
 const UpRegChecker = () => {
   flagreg = 0;
   if (!userreg.test(userup.value)) {
-    sweetAlert2("your username is not valid");
+    sweetAlert2("your username is not valid", "error");
   } else {
     flagreg++;
   }
   // !passreg.test(passup.value)
   if (!passreg.test(passup.value)) {
-    sweetAlert2("your password is not valid");
+    sweetAlert2("your password is not valid", "error");
   } else {
     flagreg++;
   }
   if (!emailreg.test(emailup.value)) {
-    sweetAlert2("your email is not valid");
+    sweetAlert2("your email is not valid", "error");
   } else {
     flagreg++;
   }
@@ -105,7 +105,7 @@ const UpRegChecker = () => {
   }
 };
 const fillAllInput = () => {
-  sweetAlert2("fill all input");
+  sweetAlert2("fill all input", "error");
 };
 const valueUpChecker = () => {
   flagvalue = 0;
@@ -133,8 +133,12 @@ btnup.addEventListener("click", () => {
   valueUpChecker();
 });
 
-const findUserOk = () => {
-  console.log("user is find");
+const findUserOk = (username) => {
+  document.querySelector(".container").remove();
+  document.querySelector(".usershow").style.transform = "translateX(0px)";
+  document.querySelector(".usershow__welcome").innerText = `
+    welcome ${username}, dear
+  `;
 };
 const findUserApi = () => {
   fetch(url, {
@@ -153,18 +157,21 @@ const findUserApi = () => {
           emailin.value == tasks[i].email &&
           passin.value == tasks[i].password
         ) {
-          findUserOk();
+          username = tasks[i].user;
+          window.localStorage.setItem("accCount", tasks[i].id);
+          window.localStorage.setItem("user", tasks[i].user);
+          findUserOk(username);
           break;
         } else {
           flagfind++;
         }
       }
       if (flagfind == tasks.length) {
-        sweetAlert2("user not find");
+        sweetAlert2("user not find", "error");
       }
     })
     .catch((error) => {
-      sweetAlert2(`server is down, ${error.message}`);
+      sweetAlert2(`server is down, ${error.message}`, "error");
     });
 };
 const valueInChecker = () => {
@@ -184,6 +191,45 @@ const valueInChecker = () => {
   }
 };
 
-btnin.addEventListener("click", (e) => {
+btnin.addEventListener("click", () => {
   valueInChecker();
 });
+
+// reload page when click on logout button
+const reload = () => {
+  window.localStorage.removeItem("accCount");
+  window.localStorage.removeItem("user");
+  location.reload();
+};
+document.querySelector(".logout").addEventListener("click", () => {
+  reload();
+});
+
+// delete account
+document.querySelector(".deleteuser").addEventListener("click", () => {
+  const indexcount = window.localStorage.getItem("accCount");
+  fetch(
+    `https://6533a095d80bd20280f6a3bd.mockapi.io/moeinparvizi/users/${indexcount}`,
+    {
+      method: "DELETE",
+    },
+  )
+    .then((res) => {
+      if (res.ok) {
+        return res.json();
+      }
+      // handle error
+    })
+    .then((task) => {
+      reload();
+    })
+    .catch((error) => {
+      // handle error
+    });
+});
+
+// check local storage
+if (!(window.localStorage.getItem("accCount") == null)) {
+  const user = window.localStorage.getItem("user");
+  findUserOk(user);
+}
