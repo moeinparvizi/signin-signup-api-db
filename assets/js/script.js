@@ -19,7 +19,10 @@ secondForm.addEventListener("submit", (e) => e.preventDefault());
 const emailup = document.querySelector(".emailup");
 const userup = document.querySelector(".userup");
 const passup = document.querySelector(".passup");
+const emailin = document.querySelector(".emailin");
+const passin = document.querySelector(".passin");
 const btnup = document.querySelector(".signupbtn");
+const btnin = document.querySelector(".signinbtn");
 const userreg = /^[a-z0-9_-]{3,15}$/;
 const emailreg = /[^@ \t\r\n]+@[^@ \t\r\n]+.[^@ \t\r\n]+/;
 const passreg =
@@ -28,7 +31,9 @@ const url = new URL(
   "https://6533a095d80bd20280f6a3bd.mockapi.io/moeinparvizi/users",
 );
 let flagvalue,
-  flagreg = 0;
+  flagvaluein,
+  flagreg,
+  flagfind = 0;
 
 const sweetAlert2 = (text) => {
   Swal.fire({
@@ -70,6 +75,7 @@ const addToApi = () => {
       userup.value = "";
       emailup.value = "";
       passup.value = "";
+      signInBtn.click();
     })
     .catch((error) => {
       sweetAlert2(`server is down . error : ${error.message}`);
@@ -125,4 +131,59 @@ const valueUpChecker = () => {
 
 btnup.addEventListener("click", () => {
   valueUpChecker();
+});
+
+const findUserOk = () => {
+  console.log("user is find");
+};
+const findUserApi = () => {
+  fetch(url, {
+    method: "GET",
+    headers: { "content-type": "application/json" },
+  })
+    .then((res) => {
+      if (res.ok) {
+        return res.json();
+      }
+    })
+    .then((tasks) => {
+      flagfind = 0;
+      for (let i in tasks) {
+        if (
+          emailin.value == tasks[i].email &&
+          passin.value == tasks[i].password
+        ) {
+          findUserOk();
+          break;
+        } else {
+          flagfind++;
+        }
+      }
+      if (flagfind == tasks.length) {
+        sweetAlert2("user not find");
+      }
+    })
+    .catch((error) => {
+      sweetAlert2(`server is down, ${error.message}`);
+    });
+};
+const valueInChecker = () => {
+  flagvaluein = 0;
+  if (passin.value == null || passin.value == "") {
+    fillAllInput();
+  } else {
+    flagvaluein++;
+  }
+  if (emailin.value == null || emailin.value == "") {
+    fillAllInput();
+  } else {
+    flagvaluein++;
+  }
+  if (flagvaluein == 2) {
+    findUserApi();
+  }
+};
+
+btnin.addEventListener("click", (e) => {
+  valueInChecker();
 });
