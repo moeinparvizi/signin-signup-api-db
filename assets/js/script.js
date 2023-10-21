@@ -44,7 +44,7 @@ const sweetAlert2 = (text) => {
     },
   });
 };
-const allToApi = () => {
+const addToApi = () => {
   console.log("everything is ok");
 };
 
@@ -53,25 +53,21 @@ const UpRegChecker = () => {
   if (!userreg.test(userup.value)) {
     sweetAlert2("your username is not valid");
   } else {
-    console.log("hello username");
     flagreg++;
   }
   // !passreg.test(passup.value)
   if (!passreg.test(passup.value)) {
     sweetAlert2("your password is not valid");
   } else {
-    console.log("hello password");
     flagreg++;
   }
   if (!emailreg.test(emailup.value)) {
-    console.log(email.value);
     sweetAlert2("your email is not valid");
   } else {
-    console.log("hello email");
     flagreg++;
   }
   if (flagreg == 3) {
-    allToApi();
+    addToApi();
   }
 };
 const fillAllInput = () => {
