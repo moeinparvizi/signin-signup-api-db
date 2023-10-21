@@ -24,6 +24,9 @@ const userreg = /^[a-z0-9_-]{3,15}$/;
 const emailreg = /[^@ \t\r\n]+@[^@ \t\r\n]+.[^@ \t\r\n]+/;
 const passreg =
   /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$ %^&*-]).{8,}$/;
+const url = new URL(
+  "https://6533a095d80bd20280f6a3bd.mockapi.io/moeinparvizi/users",
+);
 let flagvalue,
   flagreg = 0;
 
@@ -45,7 +48,32 @@ const sweetAlert2 = (text) => {
   });
 };
 const addToApi = () => {
-  console.log("everything is ok");
+  const newUser = {
+    user: userup.value,
+    email: emailup.value,
+    password: passup.value,
+  };
+
+  fetch(url, {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    // Send your data in the request body as JSON
+    body: JSON.stringify(newUser),
+  })
+    .then((res) => {
+      if (res.ok) {
+        return res.json();
+      }
+    })
+    .then((task) => {
+      sweetAlert2(`dear ${task.user}, now you can signup`);
+      userup.value = "";
+      emailup.value = "";
+      passup.value = "";
+    })
+    .catch((error) => {
+      sweetAlert2(`server is down . error : ${error.message}`);
+    });
 };
 
 const UpRegChecker = () => {
